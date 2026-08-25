@@ -686,6 +686,12 @@ function handleCorrect() {
     maxCombo = Math.max(maxCombo, combo);
     consecutiveWrongs = 0;
 
+    // 播放连击音效
+    if (audioManager) {
+        audioManager.resetWrongCount();
+        audioManager.playComboSound(combo);
+    }
+
     let scoreReward = 10;
     let starReward = 1;
 
@@ -719,6 +725,12 @@ function handleCorrect() {
 function handleWrong() {
     combo = 0;
     document.getElementById('comboDisplay').style.display = 'none';
+
+    // 播放答错音效
+    if (audioManager) {
+        audioManager.resetComboState();
+        audioManager.playWrongSound();
+    }
 
     const encourage = getRandomEncourage();
 
