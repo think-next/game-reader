@@ -526,7 +526,7 @@ function formatPoemDisplay(question) {
         if (questionText) {
             const quote = questionText[1];
             // 找到诗句中的上下联
-            const lines = extractCouplet(content, quote);
+            const lines = extractCouplet(content, quote, question.type);
             if (lines) {
                 return `<div class="poem-couplet">
                     <div class="poem-line">${lines.upper}</div>
@@ -543,7 +543,7 @@ function formatPoemDisplay(question) {
 }
 
 // 提取诗句的对仗上下联
-function extractCouplet(content, questionLine) {
+function extractCouplet(content, questionLine, questionType) {
     const sentences = content.split(/[，。！？]/).filter(s => s.trim().length > 0);
 
     // 找到问题句的位置
@@ -569,7 +569,7 @@ function extractCouplet(content, questionLine) {
     }
 
     // 如果问题是下一句，则下联显示为空
-    if (question.type === 'fillBlank' || question.type === 'nextLine') {
+    if (questionType === 'fillBlank' || questionType === 'nextLine') {
         // 将下联替换为下划线
         const blankLength = lowerLine.length;
         const underline = '____'.repeat(Math.ceil(blankLength / 2));
