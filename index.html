@@ -378,6 +378,8 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
             position: relative;
             overflow: hidden;
+            max-width: 500px;
+            margin: 0 auto;
         }
 
         /* 纸质纹理背景 */
@@ -405,27 +407,29 @@
             pointer-events: none;
         }
 
-        /* 诗句标题区域 */
+        /* 诗句标题区域 - 传统竖式排版 */
         .poem-header {
             text-align: center;
-            padding-bottom: 16px;
-            margin-bottom: 16px;
+            padding-bottom: 12px;
+            margin-bottom: 12px;
             border-bottom: 1px solid rgba(44, 44, 44, 0.06);
             position: relative;
         }
 
         .poem-title {
             font-family: "STKaiti", "KaiTi", "楷体", "BiauKai", serif;
-            font-size: clamp(16px, 4vw, 20px);
-            color: var(--color-jade);
-            font-weight: 500;
-            margin: 0 8px;
+            font-size: clamp(18px, 4.5vw, 22px);
+            color: var(--color-ink);
+            font-weight: 600;
+            display: block;
+            margin-bottom: 4px;
         }
 
         .poem-author {
-            font-size: clamp(12px, 3vw, 14px);
-            color: rgba(44, 44, 44, 0.5);
-            margin: 0 4px;
+            font-size: clamp(13px, 3.5vw, 15px);
+            color: rgba(44, 44, 44, 0.6);
+            display: block;
+            font-weight: 400;
         }
 
         /* 诗句主体区域 - 统一的文本流 */
@@ -440,8 +444,10 @@
             display: flex;
             justify-content: center;
             align-items: baseline;
-            gap: 16px;
-            margin: 8px 0;
+            gap: clamp(8px, 2vw, 16px);
+            margin: 6px 0;
+            flex-wrap: nowrap; /* 防止折行 */
+            white-space: nowrap; /* 保持单行 */
         }
 
         /* 单句诗句 */
@@ -449,12 +455,14 @@
             display: inline;
             color: var(--color-ink);
             margin: 0;
+            white-space: nowrap; /* 防止折行 */
         }
 
         /* 诗句分隔符 */
         .poem-separator {
-            color: rgba(38, 166, 154, 0.4);
-            margin: 0 4px;
+            color: rgba(44, 44, 44, 0.3);
+            margin: 0 2px;
+            flex-shrink: 0; /* 防止分隔符被压缩 */
         }
 
         /* 空白下划线样式 - 融入诗句中 */
@@ -464,6 +472,7 @@
             animation: blankPulse 2s ease-in-out infinite;
             border-bottom: 2px solid rgba(38, 166, 154, 0.3);
             padding: 0 4px;
+            white-space: nowrap; /* 防止折行 */
         }
 
         @keyframes blankPulse {
@@ -489,9 +498,25 @@
             margin: 6px 0;
         }
 
+        /* 防止容器折行 */
+        .poem-scroll {
+            overflow-x: auto; /* 如果太宽允许横向滚动 */
+        }
+
         /* 默认诗句显示样式（当格式化失败时的后备） */
         .question-poem:empty {
             display: none;
+        }
+
+        /* 小屏幕适配 */
+        @media (max-width: 360px) {
+            .poem-couplet {
+                gap: 6px;
+            }
+
+            .poem-line {
+                font-size: clamp(14px, 4vw, 16px);
+            }
         }
 
         .question-text {

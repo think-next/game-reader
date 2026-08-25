@@ -523,9 +523,8 @@ function formatPoemDisplay(question) {
     // 创建统一的古纸卷容器
     let html = `<div class="poem-scroll">
         <div class="poem-header">
-            <span class="poem-title">《${poem.title}》</span>
-            <span class="poem-separator">·</span>
-            <span class="poem-author">${poem.dynasty} · ${poem.author}</span>
+            <div class="poem-title">《${poem.title}》</div>
+            <div class="poem-author">${poem.dynasty} · ${poem.author}</div>
         </div>
         <div class="poem-body">`;
 
