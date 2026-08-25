@@ -365,8 +365,9 @@
             color: var(--color-ink);
             margin-bottom: 24px;
             line-height: 2;
-            letter-spacing: 4px;
+            letter-spacing: 2px;
             position: relative;
+            text-align: center;
         }
 
         /* 统一的诗句容器 - 仿古纸卷效果 */
@@ -378,8 +379,6 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
             position: relative;
             overflow: hidden;
-            max-width: 500px;
-            margin: 0 auto;
         }
 
         /* 纸质纹理背景 */
@@ -432,63 +431,27 @@
             font-weight: 400;
         }
 
-        /* 诗句主体区域 - 统一的文本流 */
+        /* 诗句主体区域 - 正常文本排列 */
         .poem-body {
             text-align: center;
             position: relative;
             z-index: 1;
+            line-height: 1.8;
         }
 
-        /* 对仗诗句 - 横向排列但保持整体性 */
-        .poem-couplet {
-            display: flex;
-            justify-content: center;
-            align-items: baseline;
-            gap: clamp(8px, 2vw, 16px);
-            margin: 2px 0; /* 减少上下间距 */
-            flex-wrap: nowrap; /* 防止折行 */
-            white-space: nowrap; /* 保持单行 */
-        }
-
-        /* 单句诗句 */
-        .poem-line {
-            display: inline;
+        /* 诗句内容 - 正常文本流 */
+        .poem-content {
             color: var(--color-ink);
             margin: 0;
-            white-space: nowrap; /* 防止折行 */
+            padding: 0;
         }
 
-        /* 诗句分隔符 */
-        .poem-separator {
-            color: rgba(44, 44, 44, 0.3);
-            margin: 0 2px;
-            flex-shrink: 0; /* 防止分隔符被压缩 */
-        }
-
-        /* 空白下划线样式 - 融入诗句中 */
+        /* 空白占位符样式 */
         .blank-line {
-            color: rgba(38, 166, 154, 0.4);
+            color: rgba(38, 166, 154, 0.5);
             font-weight: 400;
-            letter-spacing: 2px;
-            white-space: nowrap; /* 防止折行 */
-            font-style: italic; /* 斜体表示待填 */
-        }
-
-        /* 诗句内容容器 */
-        .poem-content,
-        .poem-lines {
-            position: relative;
-            z-index: 1;
-        }
-
-        /* 诗句行间距 */
-        .poem-body > div {
-            margin: 2px 0; /* 减少行间距 */
-        }
-
-        /* 防止容器折行 */
-        .poem-scroll {
-            overflow-x: auto; /* 如果太宽允许横向滚动 */
+            font-style: italic;
+            padding: 0 4px;
         }
 
         /* 默认诗句显示样式（当格式化失败时的后备） */
@@ -496,15 +459,9 @@
             display: none;
         }
 
-        /* 小屏幕适配 */
-        @media (max-width: 360px) {
-            .poem-couplet {
-                gap: 6px;
-            }
-
-            .poem-line {
-                font-size: clamp(14px, 4vw, 16px);
-            }
+        /* 防止横向滚动 */
+        .poem-scroll {
+            overflow-x: hidden;
         }
 
         .question-text {

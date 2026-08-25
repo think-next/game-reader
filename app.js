@@ -516,7 +516,7 @@ function showQuestion() {
     document.getElementById('progressBar').style.width = progress + '%';
 }
 
-// 格式化诗句显示，确保对仗工整
+// 格式化诗句显示，正常文本排列
 function formatPoemDisplay(question) {
     const poem = question.poem;
 
@@ -526,7 +526,8 @@ function formatPoemDisplay(question) {
             <div class="poem-title">《${poem.title}》</div>
             <div class="poem-author">${poem.dynasty} · ${poem.author}</div>
         </div>
-        <div class="poem-body">`;
+        <div class="poem-body">
+            <div class="poem-content">`;
 
     if (question.type === 'fillBlank' || question.type === 'nextLine') {
         // 提取问题中的诗句
@@ -536,23 +537,19 @@ function formatPoemDisplay(question) {
             // 找到诗句中的上下联
             const lines = extractCouplet(poem.content, quote, question.type);
             if (lines) {
-                html += `<div class="poem-couplet">
-                    <span class="poem-line">${lines.upper}</span>
-                    <span class="poem-separator">，</span>
-                    <span class="poem-line">${lines.lower}</span>
-                </div>`;
-                html += '</div></div>'; // 关闭poem-body和poem-scroll
+                html += `${lines.upper}，${lines.lower}`;
+                html += '</div></div></div>'; // 关闭所有标签
                 return html;
             }
         }
-        // 如果找不到对仗，简单分行显示
-        html += formatSimpleLines(poem.content);
+        // 如果找不到对仗，简单显示原诗
+        html += poem.content;
     } else {
         // 作者题和标题题，显示完整诗句
-        html += formatPoemLines(poem.content);
+        html += poem.content;
     }
 
-    html += '</div></div>'; // 关闭poem-body和poem-scroll
+    html += '</div></div></div>'; // 关闭poem-content、poem-body、poem-scroll
     return html;
 }
 
