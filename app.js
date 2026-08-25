@@ -518,7 +518,13 @@ function showQuestion() {
 
 // 格式化诗句显示，确保对仗工整
 function formatPoemDisplay(question) {
-    const content = question.poem.content;
+    const poem = question.poem;
+
+    // 添加诗题和作者信息
+    let html = `<div class="poem-title-decoration">
+        <span style="font-size: 14px; color: #7cb342;">《${poem.title}》</span>
+        <span style="font-size: 12px; color: #999;">${poem.dynasty}·${poem.author}</span>
+    </div>`;
 
     if (question.type === 'fillBlank' || question.type === 'nextLine') {
         // 提取问题中的诗句
@@ -526,20 +532,23 @@ function formatPoemDisplay(question) {
         if (questionText) {
             const quote = questionText[1];
             // 找到诗句中的上下联
-            const lines = extractCouplet(content, quote, question.type);
+            const lines = extractCouplet(poem.content, quote, question.type);
             if (lines) {
-                return `<div class="poem-couplet">
+                html += `<div class="poem-couplet">
                     <div class="poem-line">${lines.upper}</div>
                     <div class="poem-line">${lines.lower}</div>
                 </div>`;
+                return html;
             }
         }
         // 如果找不到对仗，简单分行显示
-        return formatSimpleLines(content);
+        html += formatSimpleLines(poem.content);
+        return html;
     }
 
     // 作者题和标题题，显示完整诗句
-    return formatPoemLines(content);
+    html += formatPoemLines(poem.content);
+    return html;
 }
 
 // 提取诗句的对仗上下联
@@ -586,16 +595,25 @@ function extractCouplet(content, questionLine, questionType) {
 function formatSimpleLines(content) {
     const lines = content.split(/[，。！？]/).filter(s => s.trim().length > 0);
     let html = '<div class="poem-lines">';
+
     for (let i = 0; i < lines.length; i += 2) {
         if (i + 1 < lines.length) {
+            // 成对显示
             html += `<div class="poem-couplet">
                 <div class="poem-line">${lines[i]}</div>
                 <div class="poem-line">${lines[i + 1]}</div>
             </div>`;
         } else {
+            // 单句显示
             html += `<div class="poem-line single">${lines[i]}</div>`;
         }
+
+        // 添加分隔线（除了最后一对）
+        if (i + 2 < lines.length) {
+            html += `<div style="width: 30px; height: 1px; background: linear-gradient(90deg, transparent, rgba(38, 166, 154, 0.15), transparent); margin: 12px auto;"></div>`;
+        }
     }
+
     html += '</div>';
     return html;
 }
@@ -607,7 +625,7 @@ function formatPoemLines(content) {
 
     let html = '<div class="poem-content">';
 
-    sentences.forEach(sentence => {
+    sentences.forEach((sentence, index) => {
         // 去除标点
         const cleanSentence = sentence.replace(/[，。！？、]/g, '');
         if (!cleanSentence) return;
@@ -622,7 +640,13 @@ function formatPoemLines(content) {
                 <div class="poem-line">${phrases[1]}</div>
             </div>`;
         } else if (phrases.length === 1) {
+            // 单句显示
             html += `<div class="poem-line single">${phrases[0]}</div>`;
+        }
+
+        // 添加诗句间分隔
+        if (index < sentences.length - 1) {
+            html += `<div style="width: 20px; height: 1px; background: linear-gradient(90deg, transparent, rgba(38, 166, 154, 0.2), transparent); margin: 8px auto;"></div>`;
         }
     });
 

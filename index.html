@@ -366,64 +366,168 @@
             margin-bottom: 20px;
             line-height: 1.8;
             letter-spacing: 2px;
+            position: relative;
+            padding: 0 20px;
+        }
+
+        /* 诗句容器 - 古风边框装饰 */
+        .question-poem::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--color-jade), transparent);
         }
 
         /* 诗句对仗显示样式 */
         .poem-couplet {
             display: flex;
             justify-content: center;
-            gap: clamp(16px, 4vw, 32px);
-            margin: 16px 0;
+            gap: clamp(20px, 5vw, 40px);
+            margin: 24px 0;
             align-items: center;
+            position: relative;
+        }
+
+        /* 对仗连接线 */
+        .poem-couplet::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 8px;
+            background: var(--color-jade);
+            border-radius: 50%;
+            opacity: 0.3;
         }
 
         .poem-line {
-            font-size: clamp(18px, 5vw, 28px);
+            font-family: "STKaiti", "KaiTi", "楷体", "BiauKai", serif;
+            font-size: clamp(20px, 5vw, 32px);
             color: var(--color-ink);
-            letter-spacing: 4px;
-            line-height: 1.6;
-            padding: 8px 16px;
-            background: rgba(245, 240, 232, 0.5);
-            border-radius: 8px;
-            min-width: 120px;
+            letter-spacing: 6px;
+            line-height: 1.8;
+            padding: 16px 24px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(245, 240, 232, 0.8) 100%);
+            border-radius: 12px;
+            min-width: 140px;
             text-align: center;
-            border: 1px solid rgba(44, 44, 44, 0.05);
+            border: 1px solid rgba(38, 166, 154, 0.15);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        /* 诗句边角装饰 */
+        .poem-line::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: -1px;
+            width: 8px;
+            height: 8px;
+            border-top: 2px solid var(--color-jade);
+            border-left: 2px solid var(--color-jade);
+            border-radius: 4px 0 0 0;
+        }
+
+        .poem-line::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            right: -1px;
+            width: 8px;
+            height: 8px;
+            border-bottom: 2px solid var(--color-jade);
+            border-right: 2px solid var(--color-jade);
+            border-radius: 0 0 4px 0;
+        }
+
+        .poem-line:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(38, 166, 154, 0.15);
         }
 
         .poem-line.single {
             width: 100%;
-            max-width: 300px;
+            max-width: 320px;
+            margin: 0 auto;
         }
 
+        /* 空白下划线样式 */
         .blank-line {
             color: var(--color-jade);
-            font-weight: 500;
-            letter-spacing: 2px;
+            font-weight: 600;
+            letter-spacing: 4px;
             animation: blankPulse 2s ease-in-out infinite;
+            text-shadow: 0 0 10px rgba(38, 166, 154, 0.3);
+            background: linear-gradient(90deg, transparent, rgba(38, 166, 154, 0.1), transparent);
+            padding: 4px 8px;
+            border-radius: 4px;
         }
 
         @keyframes blankPulse {
-            0%, 100% { opacity: 0.6; }
-            50% { opacity: 1; }
+            0%, 100% {
+                opacity: 0.7;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.02);
+            }
         }
 
+        /* 诗句内容容器 */
         .poem-content {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 8px;
+            gap: 12px;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 16px;
+            border: 1px solid rgba(44, 44, 44, 0.05);
         }
 
         .poem-lines {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 12px;
+            gap: 16px;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
         }
 
         /* 默认诗句显示样式（当格式化失败时的后备） */
         .question-poem:empty {
             display: none;
+        }
+
+        /* 诗句标题装饰 */
+        .poem-title-decoration {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .poem-title-decoration::before,
+        .poem-title-decoration::after {
+            content: '';
+            width: 30px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--color-jade));
+        }
+
+        .poem-title-decoration::after {
+            background: linear-gradient(90deg, var(--color-jade), transparent);
         }
 
         .question-text {
