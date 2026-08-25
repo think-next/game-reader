@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="format-detection" content="telephone=no">
+    <title>青云诗社</title>
+    <style>
+        /* ====================================
+           清新国风 - 简约答题系统
+           ==================================== */
+
+        /* 移除外部字体，使用系统字体以满足离线要求 */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "STSong", "SimSun", serif;
+            background: linear-gradient(135deg, #faf8f3 0%, #f5f0e8 50%, #ede7d9 100%);
+            -webkit-font-smoothing: antialiased;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        /* 配色变量 - 清新国风 */
+        :root {
+            --color-bg: #faf8f3;
+            --color-ink: #2c2c2c;
+            --color-ink-light: #5a5a5a;
+            --color-bamboo: #7cb342;
+            --color-bamboo-light: #aed581;
+            --color-jade: #26a69a;
+            --color-jade-light: #4db6ac;
+            --color-rice: #f5f0e8;
+            --color-red-accent: #d8435e;
+        }
+
+        .scene {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        /* ====================================
+           纸质纹理背景
+           ==================================== */
+        .paper-texture {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(ellipse at 20% 30%, rgba(200, 195, 180, 0.4) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 70%, rgba(190, 185, 170, 0.3) 0%, transparent 50%),
+                url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none;
+        }
+
+        /* ====================================
+           竹叶装饰
+           ==================================== */
+        .bamboo-decoration {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 120px;
+            height: 300px;
+            pointer-events: none;
+            opacity: 0.15;
+        }
+
+        .bamboo-stem {
+            position: absolute;
+            background: linear-gradient(90deg, #5d8a3a 0%, #7cb342 50%, #5d8a3a 100%);
+            border-radius: 3px;
+        }
+
+        .bamboo-stem:nth-child(1) {
+            width: 8px;
+            height: 200px;
+            right: 20px;
+            top: -50px;
+            transform: rotate(-5deg);
+        }
+
+        .bamboo-stem:nth-child(2) {
+            width: 6px;
+            height: 150px;
+            right: 40px;
+            top: -20px;
+            transform: rotate(8deg);
+        }
+
+        .bamboo-leaf {
+            position: absolute;
+            width: 40px;
+            height: 8px;
+            background: linear-gradient(90deg, #7cb342 0%, #aed581 50%, #7cb342 100%);
+            border-radius: 50% 50% 20% 20%;
+            transform-origin: left center;
+        }
+
+        .bamboo-leaf:nth-child(3) { right: 15px; top: 30px; transform: rotate(-30deg); }
+        .bamboo-leaf:nth-child(4) { right: 25px; top: 60px; transform: rotate(-45deg); width: 35px; }
+        .bamboo-leaf:nth-child(5) { right: 35px; top: 90px; transform: rotate(-25deg); width: 38px; }
+        .bamboo-leaf:nth-child(6) { right: 18px; top: 120px; transform: rotate(-40deg); }
+        .bamboo-leaf:nth-child(7) { right: 50px; top: 40px; transform: rotate(-35deg); width: 32px; }
+        .bamboo-leaf:nth-child(8) { right: 55px; top: 70px; transform: rotate(-20deg); width: 36px; }
+
+        /* ====================================
+           墨水晕染效果
+           ==================================== */
+        .ink-splash {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(ellipse at center, rgba(44, 44, 44, 0.03) 0%, transparent 70%);
+            pointer-events: none;
+            animation: inkSpread 8s ease-in-out infinite;
+        }
+
+        .ink-splash:nth-child(1) {
+            width: 200px;
+            height: 150px;
+            bottom: 10%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+
+        .ink-splash:nth-child(2) {
+            width: 180px;
+            height: 120px;
+            bottom: 20%;
+            right: 8%;
+            animation-delay: 2s;
+        }
+
+        @keyframes inkSpread {
+            0%, 100% { transform: scale(1); opacity: 0.03; }
+            50% { transform: scale(1.1); opacity: 0.05; }
+        }
+
+        /* ====================================
+           主页面内容
+           ==================================== */
+        .content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            text-align: center;
+            width: 90%;
+            max-width: 480px;
+            pointer-events: auto;
+        }
+
+        .content > * {
+            pointer-events: auto;
+        }
+
+        /* 欢迎/开始界面 */
+        .welcome-screen {
+            display: block;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .welcome-screen.hidden {
+            display: none;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .title-wrapper {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+
+        .title {
+            font-family: "STKaiti", "KaiTi", "楷体", "BiauKai", serif;
+            font-size: clamp(36px, 12vw, 72px);
+            color: var(--color-ink);
+            letter-spacing: 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .subtitle {
+            font-size: clamp(14px, 4vw, 18px);
+            color: var(--color-ink-light);
+            margin-bottom: 32px;
+            letter-spacing: 4px;
+            font-weight: 300;
+        }
+
+        .description {
+            font-size: 14px;
+            color: rgba(44, 44, 44, 0.6);
+            margin-bottom: 32px;
+            line-height: 1.8;
+            letter-spacing: 1px;
+        }
+
+        /* 财富展示 - 简约风格 */
+        .wealth-display {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            display: flex;
+            gap: 8px;
+            z-index: 100;
+        }
+
+        .wealth-item {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(44, 44, 44, 0.1);
+            border-radius: 20px;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .wealth-icon {
+            font-size: 16px;
+        }
+
+        .wealth-amount {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--color-ink);
+        }
+
+        /* 按钮 - 简约国风 */
+        .btn {
+            padding: 16px 48px;
+            font-size: 18px;
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "STSong", "SimSun", serif;
+            background: linear-gradient(135deg, var(--color-jade) 0%, var(--color-jade-light) 100%);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-weight: 500;
+            letter-spacing: 2px;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(38, 166, 154, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            pointer-events: auto;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:active {
+            transform: scale(0.96);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .btn-secondary {
+            background: white;
+            border: 1px solid rgba(38, 166, 154, 0.3);
+            color: var(--color-jade);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin: 0 6px;
+            padding: 12px 24px;
+            font-size: 15px;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        /* 答题界面 */
+        .quiz-screen {
+            display: none;
+        }
+
+        .quiz-screen.active {
+            display: block;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        /* 进度条 - 简约竹绿色 */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 2px;
+            background: var(--color-jade);
+            transition: width 0.3s ease;
+            z-index: 200;
+        }
+
+        /* 问题卡片 - 清新简约 */
+        .question-card {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(44, 44, 44, 0.08);
+            border-radius: 20px;
+            padding: 32px 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.06);
+            position: relative;
+        }
+
+        .question-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--color-jade), transparent);
+            border-radius: 0 0 3px 3px;
+        }
+
+        .question-poem {
+            font-family: "STKaiti", "KaiTi", "楷体", "BiauKai", serif;
+            font-size: clamp(20px, 6vw, 32px);
+            color: var(--color-ink);
+            margin-bottom: 20px;
+            line-height: 1.8;
+            letter-spacing: 2px;
+        }
+
+        .question-text {
+            font-size: clamp(15px, 4vw, 18px);
+            color: var(--color-ink-light);
+            margin-bottom: 24px;
+            font-weight: 400;
+        }
+
+        /* 选项按钮 - 简约风格 */
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-btn {
+            padding: 16px 20px;
+            background: white;
+            border: 1px solid rgba(44, 44, 44, 0.1);
+            border-radius: 12px;
+            color: var(--color-ink);
+            font-size: 16px;
+            text-align: center;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "STSong", "SimSun", serif;
+            letter-spacing: 1px;
+        }
+
+        .option-btn:hover {
+            background: rgba(38, 166, 154, 0.05);
+            border-color: var(--color-jade);
+        }
+
+        .option-btn.correct {
+            background: linear-gradient(135deg, rgba(38, 166, 154, 0.15) 0%, rgba(77, 182, 172, 0.15) 100%);
+            border-color: var(--color-jade);
+            color: var(--color-jade);
+            animation: correctPulse 0.4s ease;
+        }
+
+        .option-btn.wrong {
+            background: rgba(216, 67, 94, 0.1);
+            border-color: var(--color-red-accent);
+            color: var(--color-red-accent);
+            animation: wrongShake 0.4s ease;
+        }
+
+        @keyframes correctPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        @keyframes wrongShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+
+        /* 奖励弹窗 - 简约风格 */
+        .reward-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.98);
+            border: 1px solid rgba(38, 166, 154, 0.2);
+            border-radius: 20px;
+            padding: 32px 40px;
+            z-index: 1000;
+            display: none;
+            text-align: center;
+            box-shadow: 0 10px 60px rgba(0, 0, 0, 0.1);
+            max-width: 90%;
+        }
+
+        .reward-popup.show {
+            display: block;
+            animation: rewardPop 0.4s ease;
+        }
+
+        .reward-popup.loss {
+            border-color: rgba(216, 67, 94, 0.2);
+        }
+
+        @keyframes rewardPop {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.85);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        /* 嘲讽文字样式 */
+        .roast-text {
+            font-size: 15px;
+            color: var(--color-ink-light);
+            margin: 12px 0;
+            line-height: 1.6;
+        }
+
+        .roast-emoji {
+            font-size: 32px;
+            animation: emojiShake 0.5s ease;
+        }
+
+        @keyframes emojiShake {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-8deg); }
+            75% { transform: rotate(8deg); }
+        }
+
+        .reward-icon {
+            font-size: 48px;
+            animation: rewardBounce 0.6s ease;
+        }
+
+        @keyframes rewardBounce {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .reward-text {
+            font-size: 16px;
+            color: var(--color-ink-light);
+            margin-top: 12px;
+            letter-spacing: 2px;
+        }
+
+        .reward-amount {
+            font-size: 32px;
+            font-weight: 600;
+            color: var(--color-jade);
+            margin-top: 4px;
+        }
+
+        /* 连击效果 */
+        .combo-display {
+            position: fixed;
+            top: 50%;
+            right: 16px;
+            transform: translateY(-50%);
+            z-index: 50;
+        }
+
+        .combo-count {
+            font-family: "STKaiti", "KaiTi", "楷体", "BiauKai", serif;
+            font-size: 48px;
+            color: var(--color-jade);
+            animation: comboPulse 0.3s ease;
+        }
+
+        .combo-text {
+            font-size: 12px;
+            color: rgba(38, 166, 154, 0.7);
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        @keyframes comboPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* 结果界面 */
+        .result-screen {
+            display: none;
+        }
+
+        .result-screen.active {
+            display: block;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .result-title {
+            font-family: "STKaiti", "KaiTi", "楷体", "BiauKai", serif;
+            font-size: clamp(32px, 10vw, 56px);
+            color: var(--color-ink);
+            margin-bottom: 24px;
+            letter-spacing: 4px;
+        }
+
+        .result-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin: 24px 0;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(44, 44, 44, 0.08);
+            border-radius: 14px;
+            padding: 20px;
+        }
+
+        .stat-card.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(44, 44, 44, 0.5);
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .stat-value {
+            font-family: "STKaiti", "KaiTi", "楷体", "BiauKai", serif;
+            font-size: 28px;
+            color: var(--color-jade);
+        }
+
+        .stat-value.large {
+            font-size: 36px;
+        }
+
+        .evaluation-text {
+            font-size: 15px;
+            color: var(--color-ink-light);
+            line-height: 1.8;
+            text-align: left;
+        }
+
+        .grade-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: 500;
+            margin: 12px 0;
+            font-family: "STKaiti", "KaiTi", "楷体", "BiauKai", serif;
+            letter-spacing: 2px;
+        }
+
+        /* 落花装饰 */
+        .falling-petals {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .petal {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: radial-gradient(ellipse at center, rgba(245, 224, 176, 0.6) 0%, rgba(245, 224, 176, 0.3) 70%, transparent 100%);
+            border-radius: 50% 0 50% 50%;
+            animation: petalFall linear infinite;
+        }
+
+        @keyframes petalFall {
+            0% {
+                transform: translateY(-20px) rotate(0deg) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg) translateX(100px);
+                opacity: 0;
+            }
+        }
+
+        /* Toast 提示 */
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(38, 166, 154, 0.2);
+            border-radius: 25px;
+            padding: 12px 24px;
+            z-index: 2000;
+            font-size: 14px;
+            color: var(--color-ink);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            animation: toastFade 2s ease forwards;
+        }
+
+        @keyframes toastFade {
+            0% { opacity: 0; transform: translateX(-50%) translateY(10px); }
+            10% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            80% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        /* 刘海屏适配 */
+        @supports (padding: max(0px)) {
+            .wealth-display {
+                top: max(16px, env(safe-area-inset-top));
+                right: max(16px, env(safe-area-inset-right));
+            }
+
+            .progress-bar {
+                top: env(safe-area-inset-top);
+            }
+        }
+
+        /* 小屏幕适配 */
+        @media (max-width: 360px) {
+            .title {
+                font-size: 32px;
+            }
+
+            .btn {
+                padding: 14px 36px;
+                font-size: 16px;
+            }
+
+            .question-poem {
+                font-size: 18px;
+            }
+
+            .stat-value {
+                font-size: 24px;
+            }
+        }
+
+        /* 印章装饰 */
+        .seal {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border: 2px solid var(--color-red-accent);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: var(--color-red-accent);
+            font-family: "STKaiti", "KaiTi", "楷体", "BiauKai", serif;
+            opacity: 0.8;
+        }
+
+        .welcome-screen .seal {
+            top: -20px;
+            right: -30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="scene">
+        <!-- 纸质纹理 -->
+        <div class="paper-texture"></div>
+
+        <!-- 墨水晕染 -->
+        <div class="ink-splash"></div>
+        <div class="ink-splash"></div>
+
+        <!-- 落花 -->
+        <div class="falling-petals" id="fallingPetals"></div>
+
+        <!-- 竹叶装饰 -->
+        <div class="bamboo-decoration">
+            <div class="bamboo-stem"></div>
+            <div class="bamboo-stem"></div>
+            <div class="bamboo-leaf"></div>
+            <div class="bamboo-leaf"></div>
+            <div class="bamboo-leaf"></div>
+            <div class="bamboo-leaf"></div>
+            <div class="bamboo-leaf"></div>
+            <div class="bamboo-leaf"></div>
+        </div>
+
+        <!-- 财富展示 -->
+        <div class="wealth-display">
+            <div class="wealth-item">
+                <span class="wealth-icon">🪙</span>
+                <span class="wealth-amount" id="goldAmount">0</span>
+            </div>
+            <div class="wealth-item">
+                <span class="wealth-icon">⭐</span>
+                <span class="wealth-amount" id="silverAmount">0</span>
+            </div>
+        </div>
+
+        <!-- 进度条 -->
+        <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+
+        <!-- 连击显示 -->
+        <div class="combo-display" id="comboDisplay" style="display: none;">
+            <div class="combo-count" id="comboCount">0</div>
+            <div class="combo-text">连对</div>
+        </div>
+
+        <!-- 主内容区 -->
+        <div class="content">
+            <!-- 欢迎界面 -->
+            <div class="welcome-screen" id="welcomeScreen">
+                <div class="title-wrapper">
+                    <div class="title">青云诗社</div>
+                    <div class="seal">诗</div>
+                </div>
+                <div class="subtitle">以诗会友 · 静心品茗</div>
+                <p class="description">
+                    三十题诗词挑战，答对获积分，连对有奖励。<br>
+                    可保存成绩、发布笔记分享心得。
+                </p>
+                <button class="btn" id="startQuizBtn">开始挑战</button>
+            </div>
+
+            <!-- 答题界面 -->
+            <div class="quiz-screen" id="quizScreen">
+                <div class="question-card">
+                    <div class="question-poem" id="questionPoem"></div>
+                    <div class="question-text" id="questionText"></div>
+                    <div class="options" id="optionsContainer"></div>
+                </div>
+            </div>
+
+            <!-- 结果界面 -->
+            <div class="result-screen" id="resultScreen">
+                <div class="result-title">挑战结束</div>
+                <div class="result-stats" id="resultStats">
+                    <div class="stat-card">
+                        <div class="stat-label">答对题数</div>
+                        <div class="stat-value" id="correctCount">0/30</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">获得积分</div>
+                        <div class="stat-value" id="goldEarned">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">获得星星</div>
+                        <div class="stat-value" id="silverEarned">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">最高连击</div>
+                        <div class="stat-value" id="maxCombo">0</div>
+                    </div>
+                </div>
+                <div id="gradeContainer"></div>
+                <div class="btn-group">
+                    <button class="btn btn-secondary" id="saveImageBtn">保存成绩</button>
+                    <button class="btn btn-secondary" id="postNoteBtn">发布笔记</button>
+                    <button class="btn" id="restartQuizBtn">再来一局</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 奖励弹窗 -->
+        <div class="reward-popup" id="rewardPopup">
+            <div class="reward-icon" id="rewardIcon">🌿</div>
+            <div class="reward-text" id="rewardText">积分增加</div>
+            <div class="reward-amount" id="rewardAmount">+10</div>
+        </div>
+    </div>
+
+    <!-- 隐藏的 Canvas 用于生成成绩图片 -->
+    <canvas id="resultCanvas" style="display: none;"></canvas>
+
+    <script src="./app.js"></script>
+    <script>
+        // 生成落花效果
+        function createPetals() {
+            const container = document.getElementById('fallingPetals');
+            const petalCount = 15;
+
+            for (let i = 0; i < petalCount; i++) {
+                const petal = document.createElement('div');
+                petal.className = 'petal';
+                petal.style.left = Math.random() * 100 + '%';
+                petal.style.animationDuration = (Math.random() * 10 + 15) + 's';
+                petal.style.animationDelay = (Math.random() * 15) + 's';
+                petal.style.width = (Math.random() * 6 + 8) + 'px';
+                petal.style.height = (Math.random() * 6 + 8) + 'px';
+                container.appendChild(petal);
+            }
+        }
+
+        createPetals();
+    </script>
+</body>
+</html>
