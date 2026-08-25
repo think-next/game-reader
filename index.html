@@ -445,7 +445,7 @@
             justify-content: center;
             align-items: baseline;
             gap: clamp(8px, 2vw, 16px);
-            margin: 6px 0;
+            margin: 2px 0; /* 减少上下间距 */
             flex-wrap: nowrap; /* 防止折行 */
             white-space: nowrap; /* 保持单行 */
         }
@@ -467,23 +467,11 @@
 
         /* 空白下划线样式 - 融入诗句中 */
         .blank-line {
-            color: var(--color-jade);
-            font-weight: 500;
-            animation: blankPulse 2s ease-in-out infinite;
-            border-bottom: 2px solid rgba(38, 166, 154, 0.3);
-            padding: 0 4px;
+            color: rgba(38, 166, 154, 0.4);
+            font-weight: 400;
+            letter-spacing: 2px;
             white-space: nowrap; /* 防止折行 */
-        }
-
-        @keyframes blankPulse {
-            0%, 100% {
-                opacity: 0.6;
-                border-bottom-color: rgba(38, 166, 154, 0.3);
-            }
-            50% {
-                opacity: 1;
-                border-bottom-color: rgba(38, 166, 154, 0.6);
-            }
+            font-style: italic; /* 斜体表示待填 */
         }
 
         /* 诗句内容容器 */
@@ -495,7 +483,7 @@
 
         /* 诗句行间距 */
         .poem-body > div {
-            margin: 6px 0;
+            margin: 2px 0; /* 减少行间距 */
         }
 
         /* 防止容器折行 */

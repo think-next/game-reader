@@ -584,12 +584,11 @@ function extractCouplet(content, questionLine, questionType) {
 
     // 如果问题是下一句，则下联显示为空
     if (questionType === 'fillBlank' || questionType === 'nextLine') {
-        // 将下联替换为下划线
-        const blankLength = lowerLine.length;
-        const underline = '____'.repeat(Math.ceil(blankLength / 2));
+        // 使用简洁的占位符，不需要很长
+        const placeholder = '___'; // 固定3个下划线表示待填
         return {
             upper: upperLine,
-            lower: `<span class="blank-line">${underline}</span>`
+            lower: `<span class="blank-line">${placeholder}</span>`
         };
     }
 
