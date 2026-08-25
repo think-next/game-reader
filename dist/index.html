@@ -368,59 +368,6 @@
             letter-spacing: 2px;
         }
 
-        /* 诗句对仗显示样式 */
-        .poem-couplet {
-            display: flex;
-            justify-content: center;
-            gap: clamp(16px, 4vw, 32px);
-            margin: 16px 0;
-            align-items: center;
-        }
-
-        .poem-line {
-            font-size: clamp(18px, 5vw, 28px);
-            color: var(--color-ink);
-            letter-spacing: 4px;
-            line-height: 1.6;
-            padding: 8px 16px;
-            background: rgba(245, 240, 232, 0.5);
-            border-radius: 8px;
-            min-width: 120px;
-            text-align: center;
-            border: 1px solid rgba(44, 44, 44, 0.05);
-        }
-
-        .poem-line.single {
-            width: 100%;
-            max-width: 300px;
-        }
-
-        .blank-line {
-            color: var(--color-jade);
-            font-weight: 500;
-            letter-spacing: 2px;
-            animation: blankPulse 2s ease-in-out infinite;
-        }
-
-        @keyframes blankPulse {
-            0%, 100% { opacity: 0.6; }
-            50% { opacity: 1; }
-        }
-
-        .poem-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .poem-lines {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
-        }
-
         .question-text {
             font-size: clamp(15px, 4vw, 18px);
             color: var(--color-ink-light);

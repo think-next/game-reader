@@ -495,11 +495,8 @@ function showQuestion() {
     }
 
     const q = currentQuestions[currentQuestionIndex];
-    const poemDisplay = document.getElementById('questionPoem');
+    document.getElementById('questionPoem').textContent = q.poem.content;
     document.getElementById('questionText').textContent = q.question;
-
-    // 根据题型格式化诗句显示
-    poemDisplay.innerHTML = formatPoemDisplay(q);
 
     const container = document.getElementById('optionsContainer');
     container.innerHTML = '';
@@ -514,120 +511,6 @@ function showQuestion() {
 
     const progress = (currentQuestionIndex / currentQuestions.length) * 100;
     document.getElementById('progressBar').style.width = progress + '%';
-}
-
-// 格式化诗句显示，确保对仗工整
-function formatPoemDisplay(question) {
-    const content = question.poem.content;
-
-    if (question.type === 'fillBlank' || question.type === 'nextLine') {
-        // 提取问题中的诗句
-        const questionText = question.question.match(/"(.+?)"/);
-        if (questionText) {
-            const quote = questionText[1];
-            // 找到诗句中的上下联
-            const lines = extractCouplet(content, quote);
-            if (lines) {
-                return `<div class="poem-couplet">
-                    <div class="poem-line">${lines.upper}</div>
-                    <div class="poem-line">${lines.lower}</div>
-                </div>`;
-            }
-        }
-        // 如果找不到对仗，简单分行显示
-        return formatSimpleLines(content);
-    }
-
-    // 作者题和标题题，显示完整诗句
-    return formatPoemLines(content);
-}
-
-// 提取诗句的对仗上下联
-function extractCouplet(content, questionLine) {
-    const sentences = content.split(/[，。！？]/).filter(s => s.trim().length > 0);
-
-    // 找到问题句的位置
-    const questionIndex = sentences.findIndex(s => s.includes(questionLine) || questionLine.includes(s));
-    if (questionIndex === -1) return null;
-
-    // 检查是否是偶数位置（通常上联在偶数索引）
-    const isEven = questionIndex % 2 === 0;
-
-    // 找到上下联
-    let upperLine, lowerLine;
-
-    if (isEven && questionIndex + 1 < sentences.length) {
-        // 问题句是上联
-        upperLine = sentences[questionIndex];
-        lowerLine = sentences[questionIndex + 1];
-    } else if (questionIndex > 0) {
-        // 问题句是下联
-        upperLine = sentences[questionIndex - 1];
-        lowerLine = sentences[questionIndex];
-    } else {
-        return null;
-    }
-
-    // 如果问题是下一句，则下联显示为空
-    if (question.type === 'fillBlank' || question.type === 'nextLine') {
-        // 将下联替换为下划线
-        const blankLength = lowerLine.length;
-        const underline = '____'.repeat(Math.ceil(blankLength / 2));
-        return {
-            upper: upperLine,
-            lower: `<span class="blank-line">${underline}</span>`
-        };
-    }
-
-    return { upper: upperLine, lower: lowerLine };
-}
-
-// 简单分行显示
-function formatSimpleLines(content) {
-    const lines = content.split(/[，。！？]/).filter(s => s.trim().length > 0);
-    let html = '<div class="poem-lines">';
-    for (let i = 0; i < lines.length; i += 2) {
-        if (i + 1 < lines.length) {
-            html += `<div class="poem-couplet">
-                <div class="poem-line">${lines[i]}</div>
-                <div class="poem-line">${lines[i + 1]}</div>
-            </div>`;
-        } else {
-            html += `<div class="poem-line single">${lines[i]}</div>`;
-        }
-    }
-    html += '</div>';
-    return html;
-}
-
-// 格式化完整诗句显示
-function formatPoemLines(content) {
-    // 按句号或问号、感叹号分割成完整句子
-    const sentences = content.match(/[^。！？]*[。！？]/g) || [content];
-
-    let html = '<div class="poem-content">';
-
-    sentences.forEach(sentence => {
-        // 去除标点
-        const cleanSentence = sentence.replace(/[，。！？、]/g, '');
-        if (!cleanSentence) return;
-
-        // 按逗号分割成短语
-        const phrases = sentence.split(/[，。！？]/).filter(p => p.trim().length > 0);
-
-        if (phrases.length >= 2) {
-            // 两句成联
-            html += `<div class="poem-couplet">
-                <div class="poem-line">${phrases[0]}</div>
-                <div class="poem-line">${phrases[1]}</div>
-            </div>`;
-        } else if (phrases.length === 1) {
-            html += `<div class="poem-line single">${phrases[0]}</div>`;
-        }
-    });
-
-    html += '</div>';
-    return html;
 }
 
 function selectAnswer(answer, question, btn) {
