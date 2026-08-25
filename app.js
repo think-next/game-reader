@@ -387,7 +387,6 @@ const encourageData = {
 };
 
 function getRandomEncourage() {
-    consecutiveWrongs++;
     let level, intensity;
     if (consecutiveWrongs === 1) {
         level = encourageData.mild;
@@ -480,6 +479,12 @@ function startQuiz() {
     sessionScore = 0;
     sessionStars = 0;
     consecutiveWrongs = 0;
+
+    // 重置音效管理器状态
+    if (audioManager) {
+        audioManager.resetWrongCount();
+        audioManager.resetComboState();
+    }
 
     document.getElementById('welcomeScreen').classList.add('hidden');
     document.getElementById('resultScreen').classList.remove('active');
@@ -686,7 +691,7 @@ function handleCorrect() {
     maxCombo = Math.max(maxCombo, combo);
     consecutiveWrongs = 0;
 
-    // 播放连击音效
+    // 播放连击音效并重置错误计数
     if (audioManager) {
         audioManager.resetWrongCount();
         audioManager.playComboSound(combo);
@@ -726,10 +731,12 @@ function handleWrong() {
     combo = 0;
     document.getElementById('comboDisplay').style.display = 'none';
 
-    // 播放答错音效
+    // 播放答错音效并获取更新后的错误计数
     if (audioManager) {
         audioManager.resetComboState();
-        audioManager.playWrongSound();
+        consecutiveWrongs = audioManager.playWrongSound();
+    } else {
+        consecutiveWrongs++;
     }
 
     const encourage = getRandomEncourage();

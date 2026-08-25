@@ -43,7 +43,16 @@ class AudioManager {
             window.speechSynthesis.cancel();
 
             const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'en-US';
+
+            // 根据文本内容自动检测语言
+            if (/[一-龥]/.test(text)) {
+                // 包含中文字符，使用中文
+                utterance.lang = 'zh-CN';
+            } else {
+                // 英文内容
+                utterance.lang = 'en-US';
+            }
+
             utterance.rate = 1.2;
             utterance.pitch = 1.0;
             utterance.volume = 0.8;
@@ -80,6 +89,8 @@ class AudioManager {
         this.consecutiveWrongs++;
         const soundText = this.wrongAudioMap[this.consecutiveWrongs] || this.wrongAudioMap[4];
         this.playSpeech(soundText);
+        // 返回当前的错误计数，用于同步
+        return this.consecutiveWrongs;
     }
 
     // 重置错误计数
